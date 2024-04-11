@@ -10,6 +10,7 @@ public class SubTask extends Task {
         super(name, description);
         this.epicId = epicId;
     }
+
     public Integer getEpicId() {
         return epicId;
     }
@@ -33,7 +34,8 @@ public class SubTask extends Task {
         return Objects.hash(super.hashCode(), epicId);
     }
     public Integer setEpicId(int epicId) {
-        return epicId;
+        this.epicId = epicId;
+        return null;
     }
 }
 

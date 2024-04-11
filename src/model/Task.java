@@ -17,6 +17,13 @@ public class Task {
         this.status = status;
     }
 
+    public Task() {
+        this.name = "";
+        this.description = "";
+        this.status = TaskStatus.TODO;
+    }
+
+
     public String getName() {
         return name;
     }

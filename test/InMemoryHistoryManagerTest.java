@@ -24,6 +24,35 @@ class InMemoryHistoryManagerTest {
         assertTrue(historyManager.getHistory().contains(task), "The original history list was modified.");
     }
     @Test
+    void testAddTask() {
+        Task task1 = new Task("Task 1", "NEW");
+        historyManager.add(task1);
+        assertEquals(1, historyManager.getHistory().size());
+    }
+
+    @Test
+    void testAddTaskWithSameId() {
+        Task task1 = new Task("Task 1", "NEW");
+        Task task2 = new Task("Task 2", "NEW");
+        historyManager.add(task1);
+        historyManager.add(task2);
+        assertEquals(1, historyManager.getHistory().size());
+    }
+
+    @Test
+    void testRemoveTask() {
+        Task task1 = new Task("Task 1", "NEW");
+        historyManager.add(task1);
+        historyManager.remove(task1.getId());
+        assertEquals(0, historyManager.getHistory().size());
+    }
+
+    @Test
+    void testRemoveNonExistentTask() {
+        historyManager.remove(1);
+        assertEquals(0, historyManager.getHistory().size());
+    }
+    @Test
     public void testHistorySizeLimit() {
         for (int i = 1; i <= 10; i++) {
             Task task = new Task("Model.Task", "IN_PROGRESS");
@@ -32,12 +61,6 @@ class InMemoryHistoryManagerTest {
         Task extraTask = new Task("Model.Task", "NEW");
         historyManager.add(extraTask);
         assertTrue(historyManager.getHistory().contains(extraTask), "The extra task was not added to the history.");
-    }
-    @Test
-    public void testAddTask() {
-        Task task = new Task("Model.Task", "NEW");
-        historyManager.add(task);
-        assertTrue(historyManager.getHistory().contains(task), "The task was not added to the history.");
     }
     @Test
     public void testAddNullTaskException() {
