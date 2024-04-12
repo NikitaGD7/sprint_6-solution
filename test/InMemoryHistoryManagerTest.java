@@ -46,12 +46,13 @@ class InMemoryHistoryManagerTest {
         historyManager.remove(task1.getId());
         assertEquals(0, historyManager.getHistory().size());
     }
-
     @Test
-    void testRemoveNonExistentTask() {
-        historyManager.remove(1);
-        assertEquals(0, historyManager.getHistory().size());
+    public void testAddNullTaskException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            historyManager.add(null);
+        }, "Expected an exception when adding a null task.");
     }
+
     @Test
     public void testHistorySizeLimit() {
         for (int i = 1; i <= 10; i++) {
@@ -63,11 +64,8 @@ class InMemoryHistoryManagerTest {
         assertTrue(historyManager.getHistory().contains(extraTask), "The extra task was not added to the history.");
     }
     @Test
-    public void testAddNullTaskException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            historyManager.add(null);
-        }, "Expected an exception when adding a null task.");
+    void testRemoveNonExistentTask() {
+        historyManager.remove(1);
+        assertEquals(0, historyManager.getHistory().size());
     }
-
-
 }
