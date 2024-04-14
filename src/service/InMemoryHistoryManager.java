@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.Epic;
+import model.SubTask;
 
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -67,6 +69,34 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
+    @Override
+    public void removeAllTasks() {
+        while (head != null) {
+            remove(head.task.getId());
+        }
+    }
+
+    @Override
+    public void removeAllEpics() {
+        Node current = head;
+        while (current != null) {
+            if (current.task instanceof Epic) {
+                remove(current.task.getId());
+            }
+            current = current.next;
+        }
+    }
+
+    @Override
+    public void removeAllSubtasks() {
+        Node current = head;
+        while (current != null) {
+            if (current.task instanceof SubTask) {
+                remove(current.task.getId());
+            }
+            current = current.next;
+        }
+    }
 
     @Override
     public List<Task> getHistory() {
