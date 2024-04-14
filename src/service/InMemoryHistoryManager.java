@@ -1,39 +1,38 @@
 package service;
 
 import model.Task;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.Epic;
+import model.SubTask;
+
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> taskMap;
     private Node head;
     private Node tail;
-    private int size;
 
     public InMemoryHistoryManager() {
         this.taskMap = new HashMap<>();
         this.head = null;
         this.tail = null;
-        this.size = 0;
     }
     private void removeNode(Node node) {
         if (node == head) {
-            head = node.next;
-        }
-        if (node == tail) {
-            tail = node.prev;
-        }
-        if (node.prev != null) {
-            node.prev.next = node.next;
-        }
-        if (node.next != null) {
-            node.next.prev = node.prev;
-        }
-        size--;
+        head = node.next;
     }
+        if (node == tail) {
+        tail = node.prev;
+    }
+        if (node.prev != null) {
+        node.prev.next = node.next;
+    }
+        if (node.next != null) {
+        node.next.prev = node.prev;
+    }
+}
 
     @Override
     public void add(Task task) {
@@ -48,7 +47,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         Node newNode = new Node(task);
 
-        if (size == 0) {
+        if (head == null) {
             head = newNode;
             tail = newNode;
         } else {
@@ -58,16 +57,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         taskMap.put(task.getId(), newNode);
-        size++;
-
-        if (size > 10) {
-            Node firstNode = head;
-            head = head.next;
-            head.prev = null;
-            taskMap.remove(firstNode.task.getId());
-            size--;
-        }
     }
+
 
     @Override
     public void remove(int id) {
@@ -77,6 +68,36 @@ public class InMemoryHistoryManager implements HistoryManager {
             taskMap.remove(id);
         }
     }
+
+    @Override
+    public void removeAllTasks() {
+        while (head != null) {
+            remove(head.task.getId());
+        }
+    }
+
+    @Override
+    public void removeAllEpics() {
+        Node current = head;
+        while (current != null) {
+            if (current.task instanceof Epic) {
+                remove(current.task.getId());
+            }
+            current = current.next;
+        }
+    }
+
+    @Override
+    public void removeAllSubtasks() {
+        Node current = head;
+        while (current != null) {
+            if (current.task instanceof SubTask) {
+                remove(current.task.getId());
+            }
+            current = current.next;
+        }
+    }
+
     @Override
     public List<Task> getHistory() {
         List<Task> historyList = new ArrayList<>();
