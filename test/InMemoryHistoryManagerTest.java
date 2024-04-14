@@ -54,6 +54,16 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    public void testHistorySizeLimit() {
+        for (int i = 1; i <= 10; i++) {
+            Task task = new Task("Model.Task", "IN_PROGRESS");
+            historyManager.add(task);
+        }
+        Task extraTask = new Task("Model.Task", "NEW");
+        historyManager.add(extraTask);
+        assertTrue(historyManager.getHistory().contains(extraTask), "The extra task was not added to the history.");
+    }
+    @Test
     void testRemoveNonExistentTask() {
         historyManager.remove(1);
         assertEquals(0, historyManager.getHistory().size());
