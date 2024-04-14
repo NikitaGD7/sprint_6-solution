@@ -11,9 +11,4 @@ public interface HistoryManager {
     List<Task> getHistory();
     void remove(int id);
 
-    void removeAllTasks();
-
-    void removeAllEpics();
-
-    void removeAllSubtasks();
 }
