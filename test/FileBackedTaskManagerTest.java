@@ -1,15 +1,12 @@
-
-import model.Task;
 import model.Epic;
 import model.SubTask;
+import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
+import service.FileBackedTaskManager;
 
 import java.io.File;
 import java.io.IOException;
-import service.FileBackedTaskManager;
-import service.TaskManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,24 +19,28 @@ public class FileBackedTaskManagerTest {
             tempFile.delete();
         }
     }
+    private File createTempFile() {
+        try {
+            return File.createTempFile("test", ".csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Test
     public void testSaveAndLoadEmptyFile() {
-        // Arrange
         tempFile = createTempFile();
-
-        // Act
         FileBackedTaskManager taskManager = new FileBackedTaskManager(tempFile);
-        taskManager.save();
 
-        // Assert
-        TaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
+        taskManager.save();
+        FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
+
         assertEquals(0, loadedTaskManager.getAllTasks().size());
     }
 
     @Test
     public void testSaveAndLoadMultipleTasks() {
-        // Arrange
         tempFile = createTempFile();
         FileBackedTaskManager taskManager = new FileBackedTaskManager(tempFile);
 
@@ -51,20 +52,9 @@ public class FileBackedTaskManagerTest {
         taskManager.addNewEpic(epic1);
         taskManager.addNewSubtask(subTask1);
 
-        // Act
         taskManager.save();
-        TaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
+        FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        // Assert
         assertEquals(3, loadedTaskManager.getAllTasks().size());
-    }
-
-    private File createTempFile() {
-        try {
-            return File.createTempFile("test", ".csv");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
