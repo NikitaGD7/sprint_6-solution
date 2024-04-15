@@ -6,15 +6,17 @@ public class Task {
     protected String description;
     protected int id;
     protected TaskStatus status;
+    protected TaskType type;
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Task(String name, String description, TaskStatus status) {
+    public Task(String name, String description, TaskStatus status, TaskType type) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = type;
     }
 
     public Task() {
@@ -26,6 +28,9 @@ public class Task {
 
     public String getName() {
         return name;
+    }
+    public TaskType getType() {
+        return type;
     }
 
     public String getDescription() {
