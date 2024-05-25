@@ -4,10 +4,11 @@ import model.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public final File saveFile;
 
-    public FileBackedTaskManager (File saveFile) {
+    public FileBackedTaskManager(File saveFile) {
         this.saveFile = saveFile;
     }
 
@@ -29,36 +30,56 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             writer.write(historyManagerToString(getHistory()));
         } catch (IOException e) {
-            throw new ManagerSaveException("Error saving to file: " + saveFile.getName(), e);
+            throw new ManagerException("Error saving to file: " + saveFile.getName(), e);
         }
     }
+
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            // Пропуск заголовка
+            reader.readLine();
             String line = reader.readLine();
             while (line != null) {
                 Task task = taskFromString(line);
-                taskManager.addNewTask(task);
+                if (task instanceof Epic) {
+                    taskManager.addNewEpic((Epic) task);
+                } else if (task instanceof SubTask) {
+                    taskManager.addNewSubtask((SubTask) task);
+                } else {
+                    taskManager.addNewTask(task);
+                }
                 line = reader.readLine();
             }
+            // Восстановление истории
+            String historyLine = reader.readLine();
+            if (historyLine != null && !historyLine.isEmpty()) {
+                List<Integer> historyIds = historyFromString(historyLine);
+                for (Integer id : historyIds) {
+                    Task task = taskManager.getTask(id);
+                    if (task != null) {
+                        taskManager.getHistory().add(task);
+                    }
+                }
+            }
         } catch (IOException e) {
-            throw new ManagerLoadException("Error loading from file: " + file.getName(), e);
+            throw new ManagerException("Error loading from file: " + file.getName(), e);
         }
         return taskManager;
     }
-    public static class ManagerLoadException extends RuntimeException {
 
+
+    public static class ManagerLoadException extends RuntimeException {
         public ManagerLoadException(String message, Throwable cause) {
             super(message, cause);
         }
     }
-    public static class ManagerSaveException extends RuntimeException {
 
-        public ManagerSaveException(String message, Throwable cause) {
+    public static class ManagerException extends RuntimeException {
+        public ManagerException(String message, Throwable cause) {
             super(message, cause);
         }
     }
-
 
     private String epicToString(Epic epic) {
         return epic.getId() + "," + epic.getType() + "," + epic.getName() + "," + epic.getStatus() + "," + epic.getDescription();
@@ -67,6 +88,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private String subtaskToString(SubTask subtask) {
         return subtask.getId() + "," + subtask.getType() + "," + subtask.getName() + "," + subtask.getStatus() + "," + subtask.getDescription();
     }
+
     private String taskToString(Task task) {
         return task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription();
     }
@@ -179,5 +201,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void deleteEpics() {
         super.deleteEpics();
         save();
+    }
+
+    @Override
+    public Task getTask(int id) {
+        Task task = super.getTask(id);
+        if (task != null) {
+            save();
+        }
+        return task;
+    }
+
+    @Override
+    public Epic getEpic(int id) {
+        Epic epic = super.getEpic(id);
+        if (epic != null) {
+            save();
+        }
+        return epic;
+    }
+
+    @Override
+    public SubTask getSubTask(int id) {
+        SubTask subtask = super.getSubTask(id);
+        if (subtask != null) {
+            save();
+        }
+        return subtask;
     }
 }

@@ -1,5 +1,5 @@
 package model;
 
 public enum TaskType {
-    EPIC, SUBTASK, TASK;
+    EPIC, SUBTASK, TASK, DEFAULT;
 }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileBackedTaskManagerTest {
     private File tempFile;
@@ -55,6 +56,16 @@ public class FileBackedTaskManagerTest {
         taskManager.save();
         FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
 
+        // Проверка количества задач
         assertEquals(3, loadedTaskManager.getAllTasks().size());
+
+        // Проверка конкретных задач
+        assertTrue(loadedTaskManager.getAllTasks().contains(task1));
+        assertTrue(loadedTaskManager.getEpics().contains(epic1));
+        assertTrue(loadedTaskManager.getSubtasks().contains(subTask1));
+
+        // Проверка истории
+        assertEquals(3, loadedTaskManager.getHistory().getHistory().size());
+
     }
 }
