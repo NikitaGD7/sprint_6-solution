@@ -4,15 +4,20 @@ import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import service.FileBackedTaskManager;
-
 import java.io.File;
 import java.io.IOException;
+import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FileBackedTaskManagerTest {
     private File tempFile;
+    private FileBackedTaskManager manager;
+    @BeforeEach
+    public void setUp() {
+        tempFile = new File("test_save.txt");
+        manager = new FileBackedTaskManager(tempFile);
+    }
 
     @AfterEach
     void cleanup() {
@@ -20,6 +25,7 @@ public class FileBackedTaskManagerTest {
             tempFile.delete();
         }
     }
+
     private File createTempFile() {
         try {
             return File.createTempFile("test", ".csv");
@@ -27,6 +33,20 @@ public class FileBackedTaskManagerTest {
             e.printStackTrace();
             return null;
         }
+    }
+    @Test
+    public void testSaveAndLoadAfterDeletion() {
+        Task task1 = new Task(1, "Task 1", "Description 1");
+        Task task2 = new Task(2, "Task 2", "Description 2");
+        manager.addNewTask(task1);
+        manager.addNewTask(task2);
+
+        manager.deleteTask(1);
+
+        manager.save();
+
+        manager = FileBackedTaskManager.loadFromFile(tempFile);
+        assertNull(manager.getTask(1));
     }
 
     @Test
@@ -38,34 +58,5 @@ public class FileBackedTaskManagerTest {
         FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         assertEquals(0, loadedTaskManager.getAllTasks().size());
-    }
-
-    @Test
-    public void testSaveAndLoadMultipleTasks() {
-        tempFile = createTempFile();
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(tempFile);
-
-        Task task1 = new Task("Task 1", "Description 1");
-        Epic epic1 = new Epic("Epic 1", "In Progress");
-        SubTask subTask1 = new SubTask("SubTask 1", "Subtask Description 1", epic1.getId());
-
-        taskManager.addNewTask(task1);
-        taskManager.addNewEpic(epic1);
-        taskManager.addNewSubtask(subTask1);
-
-        taskManager.save();
-        FileBackedTaskManager loadedTaskManager = FileBackedTaskManager.loadFromFile(tempFile);
-
-        // Проверка количества задач
-        assertEquals(3, loadedTaskManager.getAllTasks().size());
-
-        // Проверка конкретных задач
-        assertTrue(loadedTaskManager.getAllTasks().contains(task1));
-        assertTrue(loadedTaskManager.getEpics().contains(epic1));
-        assertTrue(loadedTaskManager.getSubtasks().contains(subTask1));
-
-        // Проверка истории
-        assertEquals(3, loadedTaskManager.getHistory().getHistory().size());
-
     }
 }

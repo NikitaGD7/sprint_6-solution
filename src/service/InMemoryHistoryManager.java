@@ -19,18 +19,18 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
     private void removeNode(Node node) {
         if (node == head) {
-        head = node.next;
-    }
+            head = node.next;
+        }
         if (node == tail) {
-        tail = node.prev;
-    }
+            tail = node.prev;
+        }
         if (node.prev != null) {
-        node.prev.next = node.next;
-    }
+            node.prev.next = node.next;
+        }
         if (node.next != null) {
-        node.next.prev = node.prev;
+            node.next.prev = node.prev;
+        }
     }
-}
 
     @Override
     public void add(Task task) {

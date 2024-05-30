@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 public class Epic extends Task {
     private final List <Integer>  subtaskIds;
-    public Epic(String name, String description) {
+    public Epic( String name, String description) {
         super(name, description);
         subtaskIds = new ArrayList<>();
     }
@@ -20,4 +20,5 @@ public class Epic extends Task {
     public void clearSubtaskIds() {
         subtaskIds.clear();
     }
+
 }

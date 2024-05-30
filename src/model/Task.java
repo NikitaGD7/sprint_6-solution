@@ -13,21 +13,22 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.TODO;
-        this.type = TaskType.DEFAULT;
+        this.type = TaskType.TASK;
     }
 
-    public Task(String name, String description, TaskStatus status, TaskType type) {
+    public Task(int id, String name, String description) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.status = status;
-        this.type = type;
+        this.status = TaskStatus.TODO;
+        this.type = TaskType.TASK;
     }
 
     public Task() {
         this.name = "";
         this.description = "";
         this.status = TaskStatus.TODO;
-        this.type = TaskType.DEFAULT;
+        this.type = TaskType.TASK;
     }
 
     public String getName() {

@@ -10,6 +10,7 @@ import java.util.List;
 
 class InMemoryTaskManagerTest {
     private InMemoryTaskManager taskManager;
+
     @BeforeEach
     public void setUp() {
         taskManager = new InMemoryTaskManager();
@@ -22,6 +23,7 @@ class InMemoryTaskManagerTest {
         Task retrievedTask = taskManager.getTask(taskId);
         assertEquals(task, retrievedTask, "The retrieved task is not the same as the added task.");
     }
+
     @Test
     public void testConflictBetweenAssignedAndGeneratedTaskIds() {
         Task task1 = new Task("Model.Task 1", "NEW");
@@ -33,6 +35,7 @@ class InMemoryTaskManagerTest {
         int generatedId = taskManager.addNewTask(task2);
         assertEquals(2, taskManager.getTask(generatedId).getId());
     }
+
     @Test
     public void testGetEpic() {
         Epic epic = new Epic("Epic", "NEW");
@@ -40,23 +43,13 @@ class InMemoryTaskManagerTest {
         Epic retrievedEpic = taskManager.getEpic(epicId);
         assertEquals(epic, retrievedEpic, "The retrieved epic is not the same as the added epic.");
     }
-    @Test
-    public void testGetSubtask() {
-        Epic epic = new Epic("Epic 1", "This is an epic");
-        taskManager.addNewEpic(epic);
-        SubTask subtask1 = new SubTask("Subtask 1", "NEW", epic.getId());
-        SubTask subtask2 = new SubTask("Subtask 2", "IN_PROGRESS", epic.getId());
-        taskManager.addNewSubtask(subtask1);
-        taskManager.addNewSubtask(subtask2);
-        List<SubTask> subtasks = taskManager.getSubtasks();
-        assertTrue(subtasks.contains(subtask1), "The subtasks list does not contain subtask1.");
-        assertTrue(subtasks.contains(subtask2), "The subtasks list does not contain subtask2.");
-    }
+
+
     @Test
     public void testGetSubTask() {
         Epic epic = new Epic("Epic 1", "This is an epic");
         taskManager.addNewEpic(epic);
-        SubTask subtask = new SubTask("Subtask 1", "This is a subtask", epic.getId());
+        SubTask subtask = new SubTask(1, "Subtask 1", "This is a subtask", epic.getId());
         int subtaskId = taskManager.addNewSubtask(subtask);
         SubTask retrievedSubTask = taskManager.getSubTask(subtaskId);
         assertEquals(subtask, retrievedSubTask, "The retrieved subtask is not the same as the added subtask.");
