@@ -8,15 +8,15 @@ public class Main {
         InMemoryTaskManager tracker = new InMemoryTaskManager();
 
         // Создание задач
-        Task task1 = new Task("Model.Task 1", "NEW");
-        Task task2 = new Task("Model.Task 2", "NEW");
+        Task task1 = new Task("Task 1", "NEW");
+        Task task2 = new Task("Task 2", "NEW");
 
         // Добавление задач в трекер
         int taskId1 = tracker.addNewTask(task1);
         int taskId2 = tracker.addNewTask(task2);
         // Создание эпиков
-        Epic epic1 = new Epic("Model.Epic 1", "NEW");
-        Epic epic2 = new Epic("Model.Epic 2", "IN_PROGRESS");
+        Epic epic1 = new Epic("Epic 1", "NEW");
+        Epic epic2 = new Epic("Epic 2", "IN_PROGRESS");
 
         // Добавление подзадач в эпик
         epic1.addSubtaskId(task1.getId());
@@ -27,9 +27,9 @@ public class Main {
         int epicId2 = tracker.addNewEpic(epic2);
 
         // Создание подзадач
-        SubTask subtask1 = new SubTask("Subtask 1", "DONE", epicId1);
-        SubTask subtask2 = new SubTask("Subtask 2","IN_PROGRESS", epicId1);
-        SubTask subtask3 = new SubTask("Subtask 3", "NEW", epicId2);
+        SubTask subtask1 = new SubTask(1, "Subtask 1", "DONE", epicId1);
+        SubTask subtask2 = new SubTask(2, "Subtask 2", "IN_PROGRESS", epicId1);
+        SubTask subtask3 = new SubTask(3, "Subtask 3", "NEW", epicId2);
 
         // Печать списков эпиков, задач и подзадач
         System.out.println("Epics: " + tracker.getEpics());
@@ -56,6 +56,5 @@ public class Main {
         System.out.println("Epics after deletion: " + tracker.getEpics());
         System.out.println("Tasks after deletion: " + tracker.getAllTasks());
         System.out.println("Subtasks after deletion: " + tracker.getSubtasks());
-
     }
 }
